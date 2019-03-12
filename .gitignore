@@ -145,3 +145,4 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
+.idea
