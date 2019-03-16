@@ -1,4 +1,5 @@
 import operator
+from functools import reduce
 
 from pyknow import *
 
@@ -6,14 +7,14 @@ from pyknow import *
 class Sintomas(Fact):
 
     def somatorio(self, listaSintomas):
-        return reduce(operator.add, map(lambda i: 1 if i == True else 0, listaSintomas))
+        return reduce(operator.add, map(lambda i: 1 if i is True else 0, listaSintomas))
 
 
 class Bipolar(KnowledgeEngine):
 
     @Rule(AND(Sintomas(humor_anormal=True), Sintomas(fisiologico=True)))
     def mania(self):
-        self.declare(Sintomas(mania=True)) # fazer isso com todos
+        self.declare(Sintomas(mania=True))  # fazer isso com todos
         print("mania")
 
     @Rule(OR(Sintomas(prejuizo_social=True), Sintomas(prejuiso_profissional=True)))
@@ -50,12 +51,12 @@ class Bipolar(KnowledgeEngine):
         Sintomas(agitacao=True)
         print("Agitacao")
 
-    @Rule(TEST()) # TODO
+    @Rule(TEST())  # TODO
     def mudanca_comportamental(self):
         Sintomas(mudanca_comportamental=True)
         print("mudanca_comportamental")
 
-    #SE somatorio(
+    # SE somatorio(
     #    autoestima_excessiva
     #    reducao_sono
     #    aumento_fala
@@ -63,173 +64,87 @@ class Bipolar(KnowledgeEngine):
     #    distrabilidade
     #    agitacao
     #    envolvimento_atividade_risco
-    #) >= 3
-    #ENTÃO mudanca_comportamental = sim
+    # ) >= 3
+    # ENTÃO mudanca_comportamental = sim
 
     @Rule(AND(Sintomas(mania=True), Sintomas(psicose=True)))
     def hipomania(self):
         self.declare(Sintomas(hipomania=True))
 
-    @Rule(OR(Sintomas(humor_deprimido=True), Sintomas(irri)))
+    @Rule(OR(Sintomas(humor_deprimido=True), Sintomas(irritavel=True)))
     def humor_deprimido(self):
         self.declare(Sintomas(humor_deprimido=True))
 
-    REGRA
-    SE
-    humor_deprimido = sim
-    OU
-    irritavel = sim
-    ENTAO
-    humor_deprimido = sim
+    @Rule(OR(Sintomas(perda_interesse=True), Sintomas(perda_prazer=True)))
+    def perda_interesse(self):
+        self.declare(Sintomas(perda_interesse=True))
 
-    REGRA
-    SE
-    perda_interesse = sim
-    OU
-    perda_prazer = sim
-    ENTAO
-    perda_interesse = sim
+    @Rule(OR(OR(Sintomas(perda_peso=True), Sintomas(ganho_peso=True)),
+             OR(Sintomas(reducao_alimentacao=True), Sintomas(aumento_alimentacao=True))))
+    def alteracao_alimentacao(self):
+        self.declare(Sintomas(Sintomas(alteracao_alimentacao=True)))
 
-    REGRA
-    SE
-    perda_peso = sim
-    OU
-    ganho_peso = sim
-    OU
-    reducao_alimentacao = sim
-    OU
-    aumento_alimentacao = sim
-    ENTAO
-    alteracao_alimentacao = sim
+    @Rule(OR(Sintomas(insonia=True), Sintomas(hipersonia=True)))
+    def alteracao_sono(self):
+        self.declare(Sintomas(alteracao_sono=True))
 
-    REGRA
-    SE
-    insonia = sim
-    OU
-    hipersonia = sim
-    ENTAO
-    alteracao_sono = sim
+    @Rule(OR(Sintomas(agitacao=True), Sintomas(retardo_psicomotor=True)))
+    def alteracao_comportamentao(self):
+        self.declare(Sintomas(alteracao_comportamentao=True))
 
-    REGRA
-    SE
-    agitacao = sim
-    OU
-    retardo_psicomotor = sim
-    ENTAO
-    alteracao_comportamentao = sim
+    @Rule(OR(Sintomas(fadiga=True), Sintomas(perda_energia=True)))
+    def cansaco(self):
+        self.declare(Sintomas(cansaco=True))
 
-    REGRA
-    SE
-    fadiga = sim
-    OU
-    perda_energia = sim
-    ENTAO
-    cansaco = sim
+    @Rule(OR(Sintomas(inutilidade=True), Sintomas(culpa_excessiva=True), Sintomas(culpa_inapropriada=True)))
+    def sentimento_depressivo(self):
+        self.declare(Sintomas(sentimento_depressivo=True))
 
-    REGRA
-    SE
-    inutilidade = sim
-    OU
-    culpa_excessiva = sim
-    OU
-    culpa_inapropriada = sim
-    ENTAO
-    sentimento_depressivo = sim
+    @Rule(OR(Sintomas(capacidade_diminuida=True), Sintomas(indecisao=True)))
+    def alteracao_pensamento(self):
+        self.declare(Sintomas(alteracao_pensamento=True))
 
-    REGRA
-    SE
-    capacidade_diminuida = sim
-    OU
-    indecisao = sim
-    ENTAO
-    alteracao_pensamento = sim
+    @Rule(AND(OR(), ))  # TODO
+    def sintomas_depressivos(self):
+        self.declare(Sintomas(sintomas_depressivos=True))
 
-    REGRA
-    SE
-    pensamentos_morte = sim
-    ENTAO
-    pensamentos_morte = sim
+    # SE humor_deprimido = sim
+    # OU perda_interesse = sim
+    # AND soma(
+    #    humor_deprimido,
+    #    perda_interesse,
+    #    alteracao_alimentacao,
+    #    alteracao_sono,
+    #    alteracao_comportamentao,
+    #    cansaco,
+    #    sentimento_depressivo,
+    #    alteracao_pensamento,
+    #    pensamentos_morte
+    # ) >= 5
+    # ENTAO sintomas_depressivos = sim
 
-    REGRA
-    SE
-    humor_deprimido = sim
-    OU
-    perda_interesse = sim
-    AND
-    soma(
-        humor_deprimido,
-        perda_interesse,
-        alteracao_alimentacao,
-        alteracao_sono,
-        alteracao_comportamentao,
-        cansaco,
-        sentimento_depressivo,
-        alteracao_pensamento,
-        pensamentos_morte
-    )
-    ENTAO
-    sintomas_depressivos = sim
+    @Rule(OR(OR(Sintomas(sofrimento_clinico=True), Sintomas(prejuiso_social=True)),
+             OR(Sintomas(prejuiso_profissional=True), Sintomas(prejuiso_area_importancia=True))))
+    def transtorno(self):
+        self.declare(Sintomas(transtorno=True))
 
-    REGRA
-    SE
-    sofrimento_clinico = sim
-    OU
-    prejuiso_social = sim
-    OU
-    prejuiso_profissional = sim
-    OU
-    prejuiso_area_importancia = sim
-    ENTAO
-    transtorno = sim
+    @Rule(AND(Sintomas(sintomas_depressivos=True), Sintomas(fisiologico=True)))
+    def depressao(self):
+        self.declare(Sintomas(depressao=True))
 
-    REGRA
+    @Rule(AND(Sintomas(mania=True), Sintomas(depressao=True)))
+    def bipolar_i(self):
+        self.declare(Sintomas(bipolar_i=True))
 
-    REGRA
-    SE
-    sintomas_depressivos = sim
-    E
-    fisiologico = sim
-    ENTAO
-    depressao = sim
+    @Rule(AND(Sintomas(hipomania=True), Sintomas(depressao=True)))
+    def bipolar_ii(self):
+        self.declare(Sintomas(bipolar_ii=True))
 
-    REGRA
-    SE
-    mania = sim
-    E
-    depressao = sim
-    ENTAO
-    bipolar_i = sim
-
-    REGRA
-    SE
-    hipomania = sim
-    E
-    depressao = sim
-    ENTAO
-    bipolar_ii = sim
-
-    REGRA
-    SE
-    psicose = sim
-    E
-    mania = nao
-    E
-    hipomania = nao
-    E
-    depressao = nao
-    ENTAO
-    outro_transtorno = sim
+    @Rule(AND(OR(Sintomas(pensamentos_morte=True), Sintomas(psicose=True), Sintomas(transtorno=True)),
+              Sintomas(mania=False), Sintomas(hipomania=False), Sintomas(depressao=False)))
+    def outro_transtorno(self):
+        self.declare(Sintomas(outro_transtorno=True))
 
 
-class RobotCrossStreet(KnowledgeEngine):
-    @Rule(Light(color='green'))
-    def green_light(self):
-        print("Walk")
-
-    @Rule(Light(color='red'))
-    def red_light(self):
-        print("Don't walk")
-
-    @Rule(AS.light << Light(color=L('yellow') | L('blinking-yellow')))
-    def cautious(self, light):
-        print("Be cautious because light is", light["color"])
+if __name__ == "__main__":
+    print("maaaaaain")
