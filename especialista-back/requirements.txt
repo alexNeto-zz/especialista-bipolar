@@ -1,9 +1,0 @@
-Click==7.0
-Flask==1.0.2
-frozendict==1.2
-itsdangerous==1.1.0
-Jinja2==2.10
-MarkupSafe==1.1.1
-pyknow==1.7.0
-schema==0.6.7
-Werkzeug==0.14.1
