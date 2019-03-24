@@ -1,20 +1,6 @@
-import operator
-from functools import reduce
-
 from pyknow import AND, OR, NOT, Rule, Fact, KnowledgeEngine, W, MATCH
 
-
-def verifica_conjunto(lista_sintomas, quantidade):
-    return 1 if somatorio(lista_sintomas) >= quantidade else 0
-
-
-def somatorio(lista_sintomas):
-    print(reduce(operator.add, map(lambda i: 0 if i is None else i, lista_sintomas)))
-    return reduce(operator.add, map(lambda i: 0 if i is None else i, lista_sintomas))
-
-
-def ask(question):
-    return 1 if input(question + " (s/n): ") == 's' else 0
+from bipolar.services import ask, verifica_conjunto
 
 
 class Sintomas(Fact):
@@ -25,6 +11,10 @@ class Bipolar(KnowledgeEngine):
     """
     Coleta dos dados
     """
+
+    @Rule(NOT(Sintomas(verifica_humor_deprimido=W())))
+    def ask_verifica_humor_deprimido(self):
+        self.declare(Sintomas(verifica_humor_deprimido=ask("verifica_humor_deprimido? ")))
 
     @Rule(NOT(Sintomas(fisiologico=W())))
     def ask_data_fisiologico(self):
@@ -265,10 +255,10 @@ class Bipolar(KnowledgeEngine):
             Sintomas(alteracao_pensamento=MATCH.alteracao_pensamento)
         ),
         AND(
-            OR(Sintomas(pensamentos_morte=0), Sintomas(pensamentos_morte=1),
-               Sintomas(pensamentos_morte=MATCH.pensamentos_morte)
-               )))
-    )
+            OR(Sintomas(pensamentos_morte=0), Sintomas(pensamentos_morte=1)),
+            Sintomas(pensamentos_morte=MATCH.pensamentos_morte)
+        )
+    ))
     def define_sintomas_depressivos(self,
                                     humor_deprimido,
                                     perda_interesse,
@@ -302,9 +292,25 @@ class Bipolar(KnowledgeEngine):
     def mania(self):
         self.declare(Sintomas(mania=1))
 
+    @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=0), Sintomas(psicose=1)))
+    def nao_mania(self):
+        self.declare(Sintomas(mania=0))
+
+    @Rule(AND(Sintomas(mudanca_comportamental=0), Sintomas(fisiologico=0), Sintomas(psicose=W())))
+    def nao_2_mania(self):
+        self.declare(Sintomas(mania=0))
+
     @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=1), Sintomas(psicose=0)))
     def hipomania(self):
         self.declare(Sintomas(hipomania=1))
+
+    @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=0), Sintomas(psicose=0)))
+    def nao_hipomania(self):
+        self.declare(Sintomas(hipomania=0))
+
+    @Rule(AND(Sintomas(mudanca_comportamental=0), Sintomas(fisiologico=W()), Sintomas(psicose=0)))
+    def nao_2_hipomania(self):
+        self.declare(Sintomas(hipomania=0))
 
     @Rule(OR(Sintomas(prejuizo_social=1), Sintomas(prejuiso_profissional=1)))
     def prejuiso_acentuado(self):
@@ -314,9 +320,17 @@ class Bipolar(KnowledgeEngine):
     def risco_potencial(self):
         self.declare(Sintomas(risco_potencial=1))
 
+    @Rule(NOT(OR(Sintomas(prejuizo_si=1), Sintomas(prejuizo_outros=1))))
+    def risco_potencial(self):
+        self.declare(Sintomas(risco_potencial=0))
+
     @Rule(OR(OR(Sintomas(prejuizo_acentuado=1), Sintomas(risco_potencial=1)), Sintomas(psicose=1)))
     def perturbacao_humor(self):
         self.declare(Sintomas(perturbacao_humor=1))
+
+    @Rule(NOT(OR(OR(Sintomas(prejuizo_acentuado=1), Sintomas(risco_potencial=1)), Sintomas(psicose=1))))
+    def perturbacao_humor(self):
+        self.declare(Sintomas(perturbacao_humor=0))
 
     @Rule(OR(Sintomas(autoestima_inflada=1), Sintomas(grandiosidade=1)))
     def autoestima_excessiva(self):
@@ -338,7 +352,7 @@ class Bipolar(KnowledgeEngine):
     def mudanca_comportamental(self):
         self.declare(Sintomas(mudanca_comportamental=1))
 
-    @Rule(OR(Sintomas(humor_deprimido=1), Sintomas(irritavel=1)))
+    @Rule(OR(Sintomas(verifica_humor_deprimido=1), Sintomas(irritavel=1)))
     def humor_deprimido(self):
         print("humor_deprimido")
         self.declare(Sintomas(humor_deprimido=1))
@@ -427,10 +441,12 @@ class Bipolar(KnowledgeEngine):
     @Rule(Sintomas(bipolar_i=1))
     def tem_bipolar_i(self):
         print("bipolar tipo I")
+        self.halt()
 
     @Rule(Sintomas(bipolar_ii=1))
     def tem_bipolar_ii(self):
         print("bipolar tipo II")
+        self.halt()
 
     @Rule(OR(
         AND(Sintomas(mania=0), Sintomas(depressao=1)),
@@ -438,14 +454,17 @@ class Bipolar(KnowledgeEngine):
     ))
     def tem_depressao(self):
         print("tem depressão")
+        self.halt()
 
     @Rule(Sintomas(outro_transtorno=1))
     def tem_outro_transtorno(self):
         print("possue outro transtorno")
+        self.halt()
 
     @Rule(Sintomas(outro_transtorno=0))
     def nao_tem_outro_transtorno(self):
         print("Não possue outro transtorno")
+        self.halt()
 
 
 if __name__ == "__main__":
