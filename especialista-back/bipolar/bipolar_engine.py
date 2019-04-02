@@ -415,6 +415,11 @@ class Bipolar(KnowledgeEngine):
     def depressao(self):
         print("depressao")
         self.declare(Sintomas(depressao=1))
+        # listar fatos criados em memoria
+        self.facts()
+        # lista regras
+        self.get_rules()
+
 
     @Rule(AND(Sintomas(mania=1), Sintomas(depressao=1)))
     def bipolar_i(self):
