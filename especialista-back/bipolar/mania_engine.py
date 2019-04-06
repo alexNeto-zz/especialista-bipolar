@@ -1,7 +1,17 @@
+from flask import Blueprint
 from pyknow import AND, OR, NOT, Rule, KnowledgeEngine, W, MATCH
 
 from bipolar.bipolar_engine import Sintomas
 from bipolar.services import ask, verifica_conjunto
+
+mania = Blueprint(r'mania', __name__)
+
+
+@mania.route('/')
+def verifica_mania(sockets):
+    mania_engine = Mania(sockets)
+    mania_engine.reset()
+    mania_engine.run()
 
 
 class Mania(KnowledgeEngine):
@@ -9,9 +19,14 @@ class Mania(KnowledgeEngine):
     Coleta dos dados
     """
 
+    def __init__(self, sockets):
+        super().__init__()
+        self.sockets = sockets
+
     @Rule(NOT(Sintomas(fisiologico=W())))
     def ask_data_fisiologico(self):
-        self.declare(Sintomas(fisiologico=ask("fisiologico? ")))
+        self.sockets.send("fisiologico")
+        self.declare(Sintomas(fisiologico=self.sockets.receive()))
 
     @Rule(NOT(Sintomas(prejuizo_social=W())))
     def ask_data_prejuizo_social(self):
@@ -70,7 +85,7 @@ class Mania(KnowledgeEngine):
         self.declare(Sintomas(envolvimento_atividade_risco=ask("envolvimento_atividade_risco? ")))
 
     @Rule(AND(
-        NOT(Sintomas(verifica_mudanca_comportamental=W())),
+        NOT(Sintomas(mudanca_comportamental=W())),
         AND(
             OR(Sintomas(autoestima_excessiva=0), Sintomas(autoestima_excessiva=1)),
             Sintomas(autoestima_excessiva=MATCH.autoestima_excessiva)
@@ -109,7 +124,7 @@ class Mania(KnowledgeEngine):
                                       agitacao,
                                       envolvimento_atividade_risco
                                       ):
-        self.declare(Sintomas(verifica_mudanca_comportamental=verifica_conjunto(
+        self.declare(Sintomas(mudanca_comportamental=verifica_conjunto(
             [
                 autoestima_excessiva,
                 reducao_sono,
@@ -127,31 +142,37 @@ class Mania(KnowledgeEngine):
     @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=1), Sintomas(psicose=1)))
     def mania(self):
         self.declare(Sintomas(mania=1))
+        self.halt()
         print("tem mania")
 
     @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=0), Sintomas(psicose=1)))
     def nao_mania(self):
         self.declare(Sintomas(mania=0))
+        self.halt()
         print("não tem mania")
 
     @Rule(AND(Sintomas(mudanca_comportamental=0), Sintomas(fisiologico=0), Sintomas(psicose=W())))
     def nao_2_mania(self):
         self.declare(Sintomas(mania=0))
+        self.halt()
         print("não tem mania")
 
     @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=1), Sintomas(psicose=0)))
     def hipomania(self):
         self.declare(Sintomas(hipomania=1))
+        self.halt()
         print("tem hipomania")
 
     @Rule(AND(Sintomas(mudanca_comportamental=1), Sintomas(fisiologico=0), Sintomas(psicose=0)))
     def nao_hipomania(self):
         self.declare(Sintomas(hipomania=0))
+        self.halt()
         print("não tem hipomania")
 
     @Rule(AND(Sintomas(mudanca_comportamental=0), Sintomas(fisiologico=W()), Sintomas(psicose=0)))
     def nao_2_hipomania(self):
         self.declare(Sintomas(hipomania=0))
+        self.halt()
         print("não tem hipomania")
 
     @Rule(OR(Sintomas(prejuizo_social=1), Sintomas(prejuiso_profissional=1)))
@@ -173,10 +194,6 @@ class Mania(KnowledgeEngine):
     @Rule(OR(Sintomas(aumento_atividade_objetivo=1), Sintomas(agitacao_psicomotora=1)))
     def agitacao(self):
         self.declare(Sintomas(agitacao=1))
-
-    @Rule(Sintomas(verifica_mudanca_comportamental=1))
-    def mudanca_comportamental(self):
-        self.declare(Sintomas(mudanca_comportamental=1))
 
 
 if __name__ == "__main__":
