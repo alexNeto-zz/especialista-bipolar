@@ -1,10 +1,7 @@
 from pyknow import AND, OR, NOT, Rule, Fact, KnowledgeEngine, W, MATCH
 
 from bipolar.services import ask, verifica_conjunto
-
-
-class Sintomas(Fact):
-    pass
+from bipolar.sintomas import Sintomas
 
 
 class Bipolar(KnowledgeEngine):
@@ -12,31 +9,31 @@ class Bipolar(KnowledgeEngine):
     Coleta dos dados
     """
 
-    @Rule(NOT(Sintomas(verifica_humor_deprimido=W())))
+    @Rule(Sintomas(verifica_humor_deprimido=None))
     def ask_verifica_humor_deprimido(self):
         self.declare(Sintomas(verifica_humor_deprimido=ask("verifica_humor_deprimido? ")))
 
-    @Rule(NOT(Sintomas(fisiologico=W())))
+    @Rule(Sintomas(fisiologico=None))
     def ask_data_fisiologico(self):
         self.declare(Sintomas(fisiologico=ask("fisiologico? ")))
 
-    @Rule(NOT(Sintomas(prejuizo_social=W())))
+    @Rule(Sintomas(prejuizo_social=None))
     def ask_data_prejuizo_social(self):
         self.declare(Sintomas(prejuizo_social=ask("prejuizo_social? ")))
 
-    @Rule(NOT(Sintomas(prejuiso_profissional=W())))
+    @Rule(Sintomas(prejuiso_profissional=None))
     def ask_data_prejuiso_profissional(self):
         self.declare(Sintomas(prejuiso_profissional=ask("prejuiso_profissional? ")))
 
-    @Rule(NOT(Sintomas(prejuizo_si=W())))
+    @Rule(Sintomas(prejuizo_si=None))
     def ask_data_prejuizo_si(self):
         self.declare(Sintomas(prejuizo_si=ask("prejuizo_si? ")))
 
-    @Rule(NOT(Sintomas(prejuizo_outros=W())))
+    @Rule(Sintomas(prejuizo_outros=None))
     def ask_data_prejuizo_outros(self):
         self.declare(Sintomas(prejuizo_outros=ask("prejuizo_outros? ")))
 
-    @Rule(NOT(Sintomas(psicose=W())))
+    @Rule(Sintomas(psicose=None))
     def ask_data_psicose(self):
         self.declare(Sintomas(psicose=ask("psicose? ")))
 

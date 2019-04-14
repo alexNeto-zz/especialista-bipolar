@@ -1,18 +1,14 @@
 from flask import Flask
-from flask_sockets import Sockets
+from flask_cors import CORS
 
 from api.test import test_blueprint
-from bipolar.mania_engine import mania
+from bipolar.mania.mania_controller import mania_blueprint
 
 app = Flask(__name__)
-sockets = Sockets(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.register_blueprint(test_blueprint)
-sockets.register_blueprint(mania, url_prefix='/mania')
+app.register_blueprint(mania_blueprint, url_prefix='/mania')
 
 if __name__ == "__main__":
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-
-    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-    server.serve_forever()
+    app.run()

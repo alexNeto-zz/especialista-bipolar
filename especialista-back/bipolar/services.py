@@ -7,7 +7,6 @@ def verifica_conjunto(lista_sintomas, quantidade):
 
 
 def somatorio(lista_sintomas):
-    print(reduce(operator.add, map(lambda i: 0 if i is None else i, lista_sintomas)))
     return reduce(operator.add, map(lambda i: 0 if i is None else i, lista_sintomas))
 
 
