@@ -1,28 +1,99 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bulma/css/bulma.min.css';
 
-class App extends Component {
+import QuestionHolder from './components/questionHolder';
+import QuestionsService from './services/questions';
+
+export default class App extends Component {
+
+  state = {
+    endpoint: "localhost:5000/mania",
+    variable: "",
+    question: "''",
+    isFinalAnswer: false,
+    finalAnswer: "",
+    questionsService: new QuestionsService()
+  }
+
+  componentDidMount() {
+    //this.onFetch(undefined);
+  }
+
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        {this.showContentWhenLoaded()}
       </div>
     );
   }
-}
 
-export default App;
+  showContentWhenLoaded() {
+    if (this.state.question !== "" && this.state.isFinalAnswer === false) {
+      return (<section className="section">
+        <div className="container">
+          <QuestionHolder question={this.state.question} answer={this.takeAnswer.bind(this)} />
+        </div>
+      </section>);
+    } else if (this.state.isFinalAnswer === false) {
+      return (<section className="section">
+        <div className="container">
+          Carregando...
+      </div>
+      </section>);
+    } else {
+      return <h1 className="title">{this.state.finalAnswer}</h1>
+    }
+  }
+
+  takeAnswer(answer) {
+    console.log(this.getQueryString());
+    this.onFetch(answer);
+  }
+
+  onFetch(answer) {
+    this.setState({
+      question: "",
+      isFinalAnswer: false
+    });
+    fetch("http://127.0.0.1:5000/mania" + this.getQueryString())
+      .then(res => res.json())
+      .then((result) => this.onFetchSuccess(result, answer), this.onFetchError)
+  }
+
+  onFetchSuccess(result, answer) {
+    if (result.isFinalAnswer){
+      this.onFinalAnswer(result);
+    } else {
+      this.onNormalAnswer(result, answer);
+    }
+  }
+
+  onFinalAnswer(result){
+    this.setState({
+    variable: "",
+    isFinalAnswer: true,
+    finalAnswer: result.answer,
+    });
+  }
+
+  onNormalAnswer(result, answer){
+    this.setState({
+      isFinalAnswer: result.isFinalAnswer,
+      variable: result.variable,
+      finalAnswer: result.answer,
+      question: this.state.questionsService.getQuestion(result.variable)
+    });
+    this.state.questionsService.setQuestionStatus(result.variable, answer);
+  }
+
+  onFetchError(error) {
+    console.log(error);
+  }
+
+  getQueryString() {
+    return "?" + this.state.questionsService.getQuestionsAsQueryString();
+  }
+
+}
