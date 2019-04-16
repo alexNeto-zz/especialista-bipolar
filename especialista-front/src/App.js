@@ -10,7 +10,7 @@ export default class App extends Component {
   state = {
     endpoint: "localhost:5000/mania",
     variable: "",
-    question: "''",
+    question: "Iniciar questionário?",
     isFinalAnswer: false,
     finalAnswer: "",
     questionsService: new QuestionsService()
@@ -48,7 +48,6 @@ export default class App extends Component {
   }
 
   takeAnswer(answer) {
-    console.log(this.getQueryString());
     this.onFetch(answer);
   }
 
@@ -63,22 +62,22 @@ export default class App extends Component {
   }
 
   onFetchSuccess(result, answer) {
-    if (result.isFinalAnswer){
+    if (result.isFinalAnswer) {
       this.onFinalAnswer(result);
     } else {
       this.onNormalAnswer(result, answer);
     }
   }
 
-  onFinalAnswer(result){
+  onFinalAnswer(result) {
     this.setState({
-    variable: "",
-    isFinalAnswer: true,
-    finalAnswer: result.answer,
+      variable: "",
+      isFinalAnswer: true,
+      finalAnswer: result.answer,
     });
   }
 
-  onNormalAnswer(result, answer){
+  onNormalAnswer(result, answer) {
     this.setState({
       isFinalAnswer: result.isFinalAnswer,
       variable: result.variable,
