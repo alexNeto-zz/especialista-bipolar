@@ -16,7 +16,7 @@ export default class QuestionHolder extends Component {
         if (this.props.question === "Iniciar questionário?") {
             return (
                 <div className="column">
-                    <button className="button is-medium" onClick={() => this.props.answer(1)}>Iniciar</button>
+                    <button className="button is-medium" onClick={() => this.props.answer()}>Iniciar</button>
                 </div>
             );
         } else {

@@ -16,11 +16,6 @@ export default class App extends Component {
     questionsService: new QuestionsService()
   }
 
-  componentDidMount() {
-    //this.onFetch(undefined);
-  }
-
-
   render() {
     return (
       <div className="App">
@@ -48,6 +43,8 @@ export default class App extends Component {
   }
 
   takeAnswer(answer) {
+    if (answer !== undefined)
+      this.state.questionsService.setQuestionStatus(this.state.variable, answer);
     this.onFetch(answer);
   }
 
@@ -77,14 +74,13 @@ export default class App extends Component {
     });
   }
 
-  onNormalAnswer(result, answer) {
+  onNormalAnswer(result) {
     this.setState({
       isFinalAnswer: result.isFinalAnswer,
       variable: result.variable,
       finalAnswer: result.answer,
       question: this.state.questionsService.getQuestion(result.variable)
     });
-    this.state.questionsService.setQuestionStatus(result.variable, answer);
   }
 
   onFetchError(error) {
