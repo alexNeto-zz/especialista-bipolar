@@ -1,0 +1,9 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "especialista-front/package.json"
+      ]
+    }
+  }
+}
