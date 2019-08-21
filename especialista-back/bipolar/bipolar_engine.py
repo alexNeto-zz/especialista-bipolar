@@ -1,7 +1,6 @@
-from pyknow import AND, OR, NOT, Rule, Fact, KnowledgeEngine, W, MATCH
-
 from bipolar.services import ask, verifica_conjunto
 from bipolar.sintomas import Sintomas
+from pyknow import AND, MATCH, NOT, OR, Fact, KnowledgeEngine, Rule, W
 
 
 class Bipolar(KnowledgeEngine):
@@ -11,7 +10,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(Sintomas(verifica_humor_deprimido=None))
     def ask_verifica_humor_deprimido(self):
-        self.declare(Sintomas(verifica_humor_deprimido=ask("verifica_humor_deprimido? ")))
+        self.declare(Sintomas(verifica_humor_deprimido=ask(
+            "verifica_humor_deprimido? ")))
 
     @Rule(Sintomas(fisiologico=None))
     def ask_data_fisiologico(self):
@@ -23,7 +23,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(Sintomas(prejuiso_profissional=None))
     def ask_data_prejuiso_profissional(self):
-        self.declare(Sintomas(prejuiso_profissional=ask("prejuiso_profissional? ")))
+        self.declare(
+            Sintomas(prejuiso_profissional=ask("prejuiso_profissional? ")))
 
     @Rule(Sintomas(prejuizo_si=None))
     def ask_data_prejuizo_si(self):
@@ -51,7 +52,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(pressao_continuar_falando=W())))
     def ask_data_pressao_continuar_falando(self):
-        self.declare(Sintomas(pressao_continuar_falando=ask("pressao_continuar_falando? ")))
+        self.declare(Sintomas(pressao_continuar_falando=ask(
+            "pressao_continuar_falando? ")))
 
     @Rule(NOT(Sintomas(fuga_ideias=W())))
     def ask_data_fuga_ideias(self):
@@ -59,15 +61,18 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(pensamento_acelerado=W())))
     def ask_data_pensamento_acelerado(self):
-        self.declare(Sintomas(pensamento_acelerado=ask("pensamento_acelerado? ")))
+        self.declare(
+            Sintomas(pensamento_acelerado=ask("pensamento_acelerado? ")))
 
     @Rule(NOT(Sintomas(aumento_atividade_objetivo=W())))
     def ask_data_aumento_atividade_objetivo(self):
-        self.declare(Sintomas(aumento_atividade_objetivo=ask("aumento_atividade_objetivo? ")))
+        self.declare(Sintomas(aumento_atividade_objetivo=ask(
+            "aumento_atividade_objetivo? ")))
 
     @Rule(NOT(Sintomas(agitacao_psicomotora=W())))
     def ask_data_agitacao_psicomotora(self):
-        self.declare(Sintomas(agitacao_psicomotora=ask("agitacao_psicomotora? ")))
+        self.declare(
+            Sintomas(agitacao_psicomotora=ask("agitacao_psicomotora? ")))
 
     @Rule(NOT(Sintomas(reducao_sono=W())))
     def ask_data_reducao_sono(self):
@@ -79,7 +84,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(envolvimento_atividade_risco=W())))
     def ask_data_envolvimento_atividade_risco(self):
-        self.declare(Sintomas(envolvimento_atividade_risco=ask("envolvimento_atividade_risco? ")))
+        self.declare(Sintomas(envolvimento_atividade_risco=ask(
+            "envolvimento_atividade_risco? ")))
 
     @Rule(NOT(Sintomas(irritavel=W())))
     def ask_data_irritavel(self):
@@ -87,7 +93,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(verifica_perda_interesse=W())))
     def aks_perda_interesse(self):
-        self.declare(Sintomas(verifica_perda_interesse=ask("perda_interesse? ")))
+        self.declare(
+            Sintomas(verifica_perda_interesse=ask("perda_interesse? ")))
 
     @Rule(NOT(Sintomas(perda_prazer=W())))
     def ask_data_perda_prazer(self):
@@ -103,11 +110,13 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(reducao_alimentacao=W())))
     def ask_data_reducao_alimentacao(self):
-        self.declare(Sintomas(reducao_alimentacao=ask("reducao_alimentacao? ")))
+        self.declare(
+            Sintomas(reducao_alimentacao=ask("reducao_alimentacao? ")))
 
     @Rule(NOT(Sintomas(aumento_alimentacao=W())))
     def ask_data_aumento_alimentacao(self):
-        self.declare(Sintomas(aumento_alimentacao=ask("aumento_alimentacao? ")))
+        self.declare(
+            Sintomas(aumento_alimentacao=ask("aumento_alimentacao? ")))
 
     @Rule(NOT(Sintomas(insonia=W())))
     def ask_data_insonia(self):
@@ -143,7 +152,8 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(capacidade_diminuida=W())))
     def ask_data_capacidade_diminuida(self):
-        self.declare(Sintomas(capacidade_diminuida=ask("capacidade_diminuida? ")))
+        self.declare(
+            Sintomas(capacidade_diminuida=ask("capacidade_diminuida? ")))
 
     @Rule(NOT(Sintomas(indecisao=W())))
     def ask_data_indecisao(self):
@@ -163,12 +173,14 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(NOT(Sintomas(prejuiso_area_importancia=W())))
     def ask_data_prejuiso_area_importancia(self):
-        self.declare(Sintomas(prejuiso_area_importancia=ask("prejuiso_area_importancia? ")))
+        self.declare(Sintomas(prejuiso_area_importancia=ask(
+            "prejuiso_area_importancia? ")))
 
     @Rule(AND(
         NOT(Sintomas(verifica_mudanca_comportamental=W())),
         AND(
-            OR(Sintomas(autoestima_excessiva=0), Sintomas(autoestima_excessiva=1)),
+            OR(Sintomas(autoestima_excessiva=0),
+               Sintomas(autoestima_excessiva=1)),
             Sintomas(autoestima_excessiva=MATCH.autoestima_excessiva)
         ),
         AND(
@@ -192,8 +204,10 @@ class Bipolar(KnowledgeEngine):
             Sintomas(agitacao=MATCH.agitacao)
         ),
         AND(
-            OR(Sintomas(envolvimento_atividade_risco=0), Sintomas(envolvimento_atividade_risco=1)),
-            Sintomas(envolvimento_atividade_risco=MATCH.envolvimento_atividade_risco)
+            OR(Sintomas(envolvimento_atividade_risco=0),
+               Sintomas(envolvimento_atividade_risco=1)),
+            Sintomas(
+                envolvimento_atividade_risco=MATCH.envolvimento_atividade_risco)
         )
     ))
     def define_mudanca_comportamental(self,
@@ -214,8 +228,7 @@ class Bipolar(KnowledgeEngine):
                 distrabilidade,
                 agitacao,
                 envolvimento_atividade_risco
-            ]
-            , 3)))
+            ], 3)))
 
     @Rule(AND(
         NOT(Sintomas(verifica_sintomas_depressivos=W())),
@@ -228,7 +241,8 @@ class Bipolar(KnowledgeEngine):
             Sintomas(perda_interesse=MATCH.perda_interesse)
         ),
         AND(
-            OR(Sintomas(alteracao_alimentacao=0), Sintomas(alteracao_alimentacao=1)),
+            OR(Sintomas(alteracao_alimentacao=0),
+               Sintomas(alteracao_alimentacao=1)),
             Sintomas(alteracao_alimentacao=MATCH.alteracao_alimentacao)
         ),
         AND(
@@ -236,7 +250,8 @@ class Bipolar(KnowledgeEngine):
             Sintomas(alteracao_sono=MATCH.alteracao_sono)
         ),
         AND(
-            OR(Sintomas(alteracao_comportamentao=0), Sintomas(alteracao_comportamentao=1)),
+            OR(Sintomas(alteracao_comportamentao=0),
+               Sintomas(alteracao_comportamentao=1)),
             Sintomas(alteracao_comportamentao=MATCH.alteracao_comportamentao)
         ),
         AND(
@@ -244,11 +259,13 @@ class Bipolar(KnowledgeEngine):
             Sintomas(cansaco=MATCH.cansaco)
         ),
         AND(
-            OR(Sintomas(sentimento_depressivo=0), Sintomas(sentimento_depressivo=1)),
+            OR(Sintomas(sentimento_depressivo=0),
+               Sintomas(sentimento_depressivo=1)),
             Sintomas(sentimento_depressivo=MATCH.sentimento_depressivo)
         ),
         AND(
-            OR(Sintomas(alteracao_pensamento=0), Sintomas(alteracao_pensamento=1)),
+            OR(Sintomas(alteracao_pensamento=0),
+               Sintomas(alteracao_pensamento=1)),
             Sintomas(alteracao_pensamento=MATCH.alteracao_pensamento)
         ),
         AND(
@@ -278,8 +295,7 @@ class Bipolar(KnowledgeEngine):
                 sentimento_depressivo,
                 alteracao_pensamento,
                 pensamentos_morte
-            ]
-            , 5)))
+            ], 5)))
 
     """
     Verificação das regras 
@@ -351,12 +367,10 @@ class Bipolar(KnowledgeEngine):
 
     @Rule(OR(Sintomas(verifica_humor_deprimido=1), Sintomas(irritavel=1)))
     def humor_deprimido(self):
-        print("humor_deprimido")
         self.declare(Sintomas(humor_deprimido=1))
 
     @Rule(OR(Sintomas(verifica_perda_interesse=1), Sintomas(perda_prazer=1)))
     def perda_interesse(self):
-        print("perda_interesse")
         self.declare(Sintomas(perda_interesse=1))
 
     @Rule(OR(
@@ -364,32 +378,26 @@ class Bipolar(KnowledgeEngine):
         OR(Sintomas(reducao_alimentacao=1), Sintomas(aumento_alimentacao=1))
     ))
     def alteracao_alimentacao(self):
-        print("alteracao_alimentacao")
         self.declare(Sintomas(Sintomas(alteracao_alimentacao=1)))
 
     @Rule(OR(Sintomas(insonia=1), Sintomas(hipersonia=1)))
     def alteracao_sono(self):
-        print("alteracao_sono")
         self.declare(Sintomas(alteracao_sono=1))
 
     @Rule(OR(Sintomas(agitacao=1), Sintomas(retardo_psicomotor=1)))
     def alteracao_comportamentao(self):
-        print("alteracao_comportamentao")
         self.declare(Sintomas(alteracao_comportamentao=1))
 
     @Rule(OR(Sintomas(fadiga=1), Sintomas(perda_energia=1)))
     def cansaco(self):
-        print("cansaco")
         self.declare(Sintomas(cansaco=1))
 
     @Rule(OR(Sintomas(inutilidade=1), Sintomas(culpa_excessiva=1), Sintomas(culpa_inapropriada=1)))
     def sentimento_depressivo(self):
-        print("sentimento_depressivo")
         self.declare(Sintomas(sentimento_depressivo=1))
 
     @Rule(OR(Sintomas(capacidade_diminuida=1), Sintomas(indecisao=1)))
     def alteracao_pensamento(self):
-        print("alteracao_pensamento")
         self.declare(Sintomas(alteracao_pensamento=1))
 
     @Rule(AND(
@@ -397,35 +405,28 @@ class Bipolar(KnowledgeEngine):
         Sintomas(verifica_sintomas_depressivos=1)
     ))
     def sintomas_depressivos(self):
-        print("sintomas_depressivos")
         self.declare(Sintomas(sintomas_depressivos=1))
 
     @Rule(OR(
         OR(Sintomas(sofrimento_clinico=1), Sintomas(prejuiso_social=1)),
-        OR(Sintomas(prejuiso_profissional=1), Sintomas(prejuiso_area_importancia=1))
+        OR(Sintomas(prejuiso_profissional=1),
+           Sintomas(prejuiso_area_importancia=1))
     ))
     def transtorno(self):
-        print("transtorno")
         self.declare(Sintomas(transtorno=1))
 
     @Rule(AND(Sintomas(sintomas_depressivos=1), Sintomas(fisiologico=1)))
     def depressao(self):
-        print("depressao")
         self.declare(Sintomas(depressao=1))
-        # listar fatos criados em memoria
         self.facts()
-        # lista regras
         self.get_rules()
-
 
     @Rule(AND(Sintomas(mania=1), Sintomas(depressao=1)))
     def bipolar_i(self):
-        print("bipolar_i")
         self.declare(Sintomas(bipolar_i=1))
 
     @Rule(AND(Sintomas(hipomania=1), Sintomas(depressao=1)))
     def bipolar_ii(self):
-        print("bipolar_ii")
         self.declare(Sintomas(bipolar_ii=1))
 
     @Rule(AND(
@@ -437,17 +438,14 @@ class Bipolar(KnowledgeEngine):
         Sintomas(depressao=0)
     ))
     def outro_transtorno(self):
-        print("outro_transtorno")
         self.declare(Sintomas(outro_transtorno=1))
 
     @Rule(Sintomas(bipolar_i=1))
     def tem_bipolar_i(self):
-        print("bipolar tipo I")
         self.halt()
 
     @Rule(Sintomas(bipolar_ii=1))
     def tem_bipolar_ii(self):
-        print("bipolar tipo II")
         self.halt()
 
     @Rule(OR(
@@ -455,17 +453,14 @@ class Bipolar(KnowledgeEngine):
         AND(Sintomas(hipomania=0), Sintomas(depressao=1))
     ))
     def tem_depressao(self):
-        print("tem depressão")
         self.halt()
 
     @Rule(Sintomas(outro_transtorno=1))
     def tem_outro_transtorno(self):
-        print("possue outro transtorno")
         self.halt()
 
     @Rule(Sintomas(outro_transtorno=0))
     def nao_tem_outro_transtorno(self):
-        print("Não possue outro transtorno")
         self.halt()
 
 

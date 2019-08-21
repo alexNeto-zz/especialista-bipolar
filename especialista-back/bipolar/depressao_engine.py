@@ -114,7 +114,6 @@ class Depressao(KnowledgeEngine):
         Sintomas(verifica_sintomas_depressivos=1)
     ))
     def sintomas_depressivos(self):
-        print("sintomas_depressivos")
         self.declare(Sintomas(sintomas_depressivos=1))
 
 
